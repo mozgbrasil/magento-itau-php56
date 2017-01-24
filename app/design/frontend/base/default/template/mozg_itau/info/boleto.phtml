@@ -1,0 +1,208 @@
+<?php
+/**
+ * Copyright © 2016 Mozg. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+<?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?><br/>
+<?php if ($_info = $this->getInfo()): ?>
+    <?php if ($_info->getMozgPspReference() == ''): ?>        
+        <?php echo Mage::helper('mozg_itau')->__('Payment has not been processed yet.') ?> <br/> 
+    <?php else :?>
+         <?php
+        $storeId = $this->getMethod()->getInfoInstance()->getOrder()->getStoreId();
+        if($this->getMethod()->getConfigDataDemoMode($storeId)): ?>
+
+        <?php else : ?>
+
+        <?php endif; ?>
+
+        <?php
+        $pspReference = $this->htmlEscape($_info->getMozgPspReference());
+        //dump($this);
+        //dump($pspReference);
+        //dump(get_class_methods(get_class($this->getMethod())));exit;
+        $codEmp = $this->getMethod()->_getConfigData('codigo_empresa', 'mozg_itau_abstract');
+        $codEmp = Mage::helper('core')->decrypt($codEmp);
+        $chave = $this->getMethod()->_getConfigData('chave_criptografia', 'mozg_itau_abstract');
+        $chave = Mage::helper('core')->decrypt($chave);
+        $incrementId = $this->getMethod()->getInfoInstance()->getOrder()->getIncrementId();
+        $pedido = substr($incrementId,-8);
+        $metodoResultado = 0;
+
+        $itauCripto = new \ItauBankline\ItauCripto();
+        $dadosCriptografados = $itauCripto->geraConsulta($codEmp , $pedido , $metodoResultado , $chave);
+
+        $query_dc = $dadosCriptografados;
+
+        /*
+        try {
+
+            $itauService = new \ItauBankline\ItauBanklineService();
+
+            $transacao = $itauService->consultaTransacao($dadosCriptografados);
+
+            dump($transacao);
+
+        } catch (Exception $e) {
+            exit($e->getMessage());
+        }
+        */      
+
+        $itauService = new \ItauBankline\ItauBanklineService();
+
+        $url = $itauService::URL_CONSULTA_TRANSACOES;
+
+        $url = $url . $query_dc;
+
+        //dump($url);
+        $mozg_util = new \Mozg\Framework\Util();
+        $_url = $mozg_util->left($url,50);
+        ?>
+        <?php echo Mage::helper('mozg_itau')->__('Consulta: <a href="%s" target="_blank">%s</a>', $url, $_url) ?> <br/>
+
+    <?php endif;?>
+
+    <?php $boleto = unserialize($this->getInfo()->getPoNumber())?>
+    <?php /* ?>
+    <?php echo Mage::helper('mozg_itau')->__('Social Security Number: %s', $this->htmlEscape($boleto['social_security_number'])) ?><br/>
+    <?php echo Mage::helper('mozg_itau')->__('Firstname: %s', $this->htmlEscape($boleto['firstname'])) ?><br/>
+    <?php echo Mage::helper('mozg_itau')->__('Lastname: %s', $this->htmlEscape($boleto['lastname'])) ?><br/>
+    <?php */ ?>
+    <?php 
+
+        //dump($url);
+        $url = $this->getInfo()->getOrder()->getMozgPaymentUrl();
+        $_url = $mozg_util->left($url,50);
+
+    ?>
+    <?php echo Mage::helper('mozg_itau')->__('Payment URL: <a target="_blank" href="%s">%s</a>', $url, $_url) ?><br/>
+    <?php if($_info->getMozgBoletoPaidAmount() != null && $_info->getMozgBoletoPaidAmount() != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Paid amount: %s', $this->htmlEscape($_info->getMozgBoletoPaidAmount())) ?> <br/>
+    <?php endif; ?>
+    <?php if($this->htmlEscape($this->getInfo()->getMozgRefusalReasonRaw()) != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Raw acquirer response: %s', $this->htmlEscape($this->getInfo()->getMozgRefusalReasonRaw())) ?><br/>
+    <?php endif; ?>
+    <?php if($this->htmlEscape($this->getInfo()->getMozgAuthCode()) != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Authorisation code: %s', $this->htmlEscape($this->getInfo()->getMozgAuthCode())) ?><br/>
+    <?php endif; ?>
+    <?php if($this->htmlEscape($this->getInfo()->getMozgAcquirerReference()) != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Acquirer reference: %s', $this->htmlEscape($this->getInfo()->getMozgAcquirerReference())) ?><br/>
+    <?php endif; ?>
+<?php endif;?>
+
+<?php
+$controllerName = Mage::app ()->getRequest ()->getControllerName ();
+$moduleName = Mage::app ()->getRequest ()->getModuleName ();
+
+$isValidCheckout = !strcmp ($controllerName, 'onepage') || !strcmp ($moduleName, 'onestepcheckout') ? true : false;
+
+//dump($isValidCheckout);
+
+$url = $this->getInfo()->getOrder()->getMozgPaymentUrl();
+//dump($url);
+$parts = parse_url($url);
+//dump($parts);
+parse_str($parts['query'], $query);
+//dump($query);
+$DC = $query['DC'];
+//dump($DC);
+
+?>
+
+<?php if ($isValidCheckout): ?>
+
+<form id="itaushopline_form" method="POST" action="https://shopline.itau.com.br/shopline/shopline.asp">
+<input id="dc" name="DC" value="<?php echo $DC ?>" type="hidden"/>
+<button id="itaushopline_submit" type="submit" title="Efetuar pagamento" class="button btn-checkout opc-btn-checkout"><span><span>Efetuar pagamento</span></span></button>
+</form>
+
+<script type="text/javascript">
+    function MozgPaymentPopup (event, form)
+    {
+
+        console.log(arguments.callee.name);
+
+        console.log(form);
+
+        popUp = window.open ("", 'SHOPLINE');
+        //popUp = window.open('','SHOPLINE','toolbar=yes,menubar=yes,resizable=yes,status=no,scrollbars=yes,width=815,height=575');
+
+        console.log(popUp);
+
+        if (popUp == null || typeof (popUp) == 'undefined')
+        {
+
+            event.preventDefault();
+
+            alert("O bloqueador de pop-ups está ativo em seu navegador." + '\n' + "Por favor, desative o seu bloqueador de pop-ups para este site e clique no botão 'Efetuar pagamento' novamente.");
+
+            window.location.href = "#itaushopline_submit"; 
+            
+            retorno = false;
+        }
+        else
+        {
+
+            form.target = 'SHOPLINE';
+            popUp.focus();
+            
+            retorno = true;
+        }
+
+
+        var loop = setInterval(function() {
+            console.log(popUp.closed);
+            if(popUp.closed) {
+                clearInterval(loop);
+                console.log('closed');
+
+                pre.show('Processando...');
+
+                setTimeout(function() {
+                    setPaymentNotificationUrl_Itau();
+                }, 1);
+            }
+        }, 1000);
+
+        return retorno;
+
+    }
+
+    jQuery('#itaushopline_form').submit(function (event) {
+        console.log('submit');      
+        console.log(event);
+        var target= 'target' in event ? event.target : event.srcElement;
+        console.log('clicked on '+target.tagName);
+    
+        form = $('itaushopline_form');
+        MozgPaymentPopup(event, form);
+    });
+
+    $("itaushopline_submit").onclick=function(event){
+        console.log('onclick');
+        console.log(event);
+        var target= 'target' in event ? event.target : event.srcElement;
+        console.log('clicked on '+target.tagName);
+
+    }; 
+
+    /*$("itaushopline_submit").click(function(event){
+        console.log('click');
+        console.log(event);
+    });*/
+
+    Event.observe (window, "load", function (event){
+        console.log('load');
+        console.log(event);
+        var target= 'target' in event ? event.target : event.srcElement;
+        console.log('clicked on '+target.tagName);
+
+        $('itaushopline_form').itaushopline_submit.click();
+    });
+
+
+</script>
+<?php endif; ?>
+
+<?php echo $this->getChildHtml()?>

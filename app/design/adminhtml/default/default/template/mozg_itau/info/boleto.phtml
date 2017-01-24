@@ -1,0 +1,91 @@
+<?php
+/**
+ * Copyright © 2016 Mozg. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+<?php
+
+$mozg_util = new \Mozg\Framework\Util();
+
+?>
+<?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?><br/>
+<?php if ($_info = $this->getInfo()): ?>
+    <?php if ($_info->getMozgPspReference() == ''): ?>        
+        <?php echo Mage::helper('mozg_itau')->__('Payment has not been processed yet.') ?> <br/> 
+    <?php else :?>
+         <?php
+        $storeId = $this->getMethod()->getInfoInstance()->getOrder()->getStoreId();
+        if($this->getMethod()->getConfigDataDemoMode($storeId)): ?>
+
+        <?php else : ?>
+
+        <?php endif; ?>
+
+        <?php
+        $pspReference = $this->htmlEscape($_info->getMozgPspReference());
+
+        $codEmp = $this->getMethod()->_getConfigData('codigo_empresa', 'mozg_itau_abstract');
+        $codEmp = Mage::helper('core')->decrypt($codEmp);
+        $chave = $this->getMethod()->_getConfigData('chave_criptografia', 'mozg_itau_abstract');
+        $chave = Mage::helper('core')->decrypt($chave);
+        $incrementId = $this->getMethod()->getInfoInstance()->getOrder()->getIncrementId();
+        $pedido = substr($incrementId,-8);
+
+         ?>
+
+        <?php
+        $metodoResultado = 0;
+
+        $itauCripto = new \ItauBankline\ItauCripto();
+        $query_dc = $itauCripto->geraConsulta($codEmp , $pedido , $metodoResultado , $chave);
+
+        $itauService = new \ItauBankline\ItauBanklineService();
+        $url_consulta = $itauService::URL_CONSULTA_TRANSACOES;
+        $url = $url_consulta . $query_dc;        
+        $_url = $mozg_util->left($url,50);
+        ?>
+        <?php echo Mage::helper('mozg_itau')->__('Consulta HTML: <a href="%s" target="_blank">%s</a>', $url, $_url) ?> <br/>
+
+        <?php
+        $metodoResultado = 1;
+
+        $itauCripto = new \ItauBankline\ItauCripto();
+        $query_dc = $itauCripto->geraConsulta($codEmp , $pedido , $metodoResultado , $chave);
+
+        $itauService = new \ItauBankline\ItauBanklineService();
+        $url_consulta = $itauService::URL_CONSULTA_TRANSACOES;
+        $url = $url_consulta . $query_dc;        
+        $_url = $mozg_util->left($url,50);
+        ?>
+        <?php echo Mage::helper('mozg_itau')->__('Consulta XML: <a href="%s" target="_blank">%s</a>', $url, $_url) ?> <br/>
+
+    <?php endif;?>
+
+    <?php $boleto = unserialize($this->getInfo()->getPoNumber())?>
+    <?php /* ?>
+	<?php echo Mage::helper('mozg_itau')->__('Social Security Number: %s', $this->htmlEscape($boleto['social_security_number'])) ?><br/>
+	<?php echo Mage::helper('mozg_itau')->__('Firstname: %s', $this->htmlEscape($boleto['firstname'])) ?><br/>
+	<?php echo Mage::helper('mozg_itau')->__('Lastname: %s', $this->htmlEscape($boleto['lastname'])) ?><br/>
+    <?php */ ?>
+    <?php 
+
+        //dump($url);
+        $url = $this->getInfo()->getOrder()->getMozgPaymentUrl();
+        $_url = $mozg_util->left($url,50);
+
+    ?>
+	<?php echo Mage::helper('mozg_itau')->__('Payment URL: <a target="_blank" href="%s">%s</a>', $url, $_url) ?><br/>
+    <?php if($_info->getMozgBoletoPaidAmount() != null && $_info->getMozgBoletoPaidAmount() != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Paid amount: %s', $this->htmlEscape($_info->getMozgBoletoPaidAmount())) ?> <br/>
+    <?php endif; ?>
+    <?php if($this->htmlEscape($this->getInfo()->getMozgRefusalReasonRaw()) != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Raw acquirer response: %s', $this->htmlEscape($this->getInfo()->getMozgRefusalReasonRaw())) ?><br/>
+    <?php endif; ?>
+    <?php if($this->htmlEscape($this->getInfo()->getMozgAuthCode()) != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Authorisation code: %s', $this->htmlEscape($this->getInfo()->getMozgAuthCode())) ?><br/>
+    <?php endif; ?>
+    <?php if($this->htmlEscape($this->getInfo()->getMozgAcquirerReference()) != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Acquirer reference: %s', $this->htmlEscape($this->getInfo()->getMozgAcquirerReference())) ?><br/>
+    <?php endif; ?>
+<?php endif;?>
