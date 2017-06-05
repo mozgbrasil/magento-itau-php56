@@ -1,0 +1,795 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Mozg. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+-->
+<config>
+    <sections>
+        <payment>
+            <groups>
+                <mozg_itau_abstract translate="label" module="mozg_itau">
+                    <label>Itau Default Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>3000</sort_order>
+                    <frontend_class>complex</frontend_class>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <frontend_model>mozg_itau/adminhtml_system_config_fieldset_method</frontend_model>
+                    <fields>
+                        <mozg_itau_abstract_license type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Licenciamento</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>10</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <license translate="label">
+                                    <label>Licença para uso comercial</label>
+                                    <comment></comment>
+                                    <frontend_type>textarea</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/license</config_path>
+                                    <sort_order>8</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </license>
+                                <license_output translate="label">
+                                    <label></label>
+                                    <comment></comment>
+                                    <license_config_path>payment/mozg_itau_abstract/license</license_config_path>
+                                    <method_id>mozg_itau</method_id>
+                                    <frontend_type>text</frontend_type>
+                                    <frontend_model>mozg_base/adminhtml_system_config_form_field_license</frontend_model>
+                                    <sort_order>9</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </license_output>
+                            </fields>
+                        </mozg_itau_abstract_license>
+                        <mozg_itau_required_settings type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Required Settings</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>20</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <codigo_empresa translate="label">
+                                    <label>Código da Empresa</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-código-da-empresa" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>obscure</frontend_type>
+                                    <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                                    <config_path>payment/mozg_itau_abstract/codigo_empresa</config_path>
+                                    <sort_order>100</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </codigo_empresa>
+                                <chave_criptografia translate="label">
+                                    <label>Chave de Criptografia</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-chave-de-criptografia" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>obscure</frontend_type>
+                                    <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                                    <config_path>payment/mozg_itau_abstract/chave_criptografia</config_path>
+                                    <sort_order>110</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </chave_criptografia>
+                            </fields>
+                        </mozg_itau_required_settings>
+                        <mozg_itau_order_process type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Advanced: Magento Order Processing</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>30</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <order_status translate="label">
+                                    <label>Order status: order creation</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-do-pedido-ordem-de-criação" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/order_status</config_path>
+                                    <source_model>adminhtml/system_config_source_order_status_new</source_model>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </order_status>
+                                <payment_pre_authorized>
+                                    <label>Order status: payment authorisation</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-do-pedido-autorização-de-pagamento" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/payment_pre_authorized</config_path>
+                                    <source_model>adminhtml/system_config_source_order_status_newprocessing</source_model>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </payment_pre_authorized>
+                                <payment_authorized translate="label">
+                                    <label>Order status: payment confirmed</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-do-pedido-pagamento-confirmado" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/payment_authorized</config_path>
+                                    <source_model>adminhtml/system_config_source_order_status_processing</source_model>
+                                    <sort_order>30</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </payment_authorized>
+                                <payment_cancelled translate="label">
+                                    <label>Order status: order cancellation</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-do-pedido-cancelamento-de-pedido" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/payment_cancelled</config_path>
+                                    <source_model>mozg_itau/source_cancelModes</source_model>
+                                    <sort_order>40</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </payment_cancelled>
+                                <payment_authorized_virtual>
+                                    <label>Order status: payment capture (virtual products)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-do-pedido-captura-de-pagamento-produtos-virtuais" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/payment_authorized_virtual</config_path>
+                                    <source_model>mozg_itau/source_status_complete</source_model>
+                                    <sort_order>50</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </payment_authorized_virtual>
+                                <refund_authorized translate="label">
+                                    <label>Order status: Mozg Refunded</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-do-pedido-reembolsado" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/refund_authorized</config_path>
+                                    <source_model>mozg_itau/source_status_refund</source_model>
+                                    <sort_order>60</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </refund_authorized>
+                                <refund_partial_authorized translate="label">
+                                    <label>Order status: Mozg partial Refunded</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-do-pedido-reembolsado-parcial" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/refund_partial_authorized</config_path>
+                                    <source_model>adminhtml/system_config_source_order_status_processing</source_model>
+                                    <sort_order>70</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </refund_partial_authorized>
+                                <pending_status>
+                                    <label>Order status: pending orders</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-do-pedido-pedidos-pendentes" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/pending_status</config_path>
+                                    <source_model>mozg_itau/source_status_pending</source_model>
+                                    <sort_order>80</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </pending_status>
+                                <capture_mode translate="label">
+                                    <label>Capture Delay</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-tempo-de-captura" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mozg_itau/source_captureModes</source_model>
+                                    <config_path>payment/mozg_itau_abstract/capture_mode</config_path>
+                                    <sort_order>90</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </capture_mode>
+                                <create_pending_invoice translate="label">
+                                    <label>Create a pending invoice (only for manual capture)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-criar-uma-fatura-pendente-apenas-para-captura-manual" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>100</sort_order>
+                                    <config_path>payment/mozg_itau_abstract/create_pending_invoice</config_path>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </create_pending_invoice>
+                                <capture_on_shipment>
+                                    <label>Order status: Capture on shipment</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-do-pedido-capturar-no-embarque" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <config_path>payment/mozg_itau_abstract/capture_on_shipment</config_path>
+                                    <sort_order>110</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </capture_on_shipment>
+                                <uncancelorder translate="label">
+                                    <label>Enable Uncancel Order</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-ativar-descancelar-pedido" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/uncancelorder</config_path>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>120</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>0</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </uncancelorder>
+                                <autorefundoncancel translate="label">
+                                    <label>Automatic cancel\refund when a order is canceled</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-cancelamentoreembolso-automático-quando-o-pedido-é-cancelado" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/autorefundoncancel</config_path>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>130</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>0</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </autorefundoncancel>
+                                <send_invoice_update_mail translate="label">
+                                    <label>Invoice email</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-e-mail-da-fatura" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <config_path>payment/mozg_itau_abstract/send_invoice_update_mail</config_path>
+                                    <sort_order>140</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </send_invoice_update_mail>
+                                <send_update_mail translate="label">
+                                    <label>Customers receive order status update email (deprecated).</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-os-clientes-recebem-e-mail-de-atualização-de-status-de-pedido" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <config_path>payment/mozg_itau_abstract/send_update_mail</config_path>
+                                    <sort_order>150</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </send_update_mail>
+                                <debug translate="label">
+                                    <label>Enable debug logging</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-ativar-log-de-depuração" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/debug</config_path>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>160</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </debug>
+                            </fields>
+                        </mozg_itau_order_process>
+                        <mozg_itau_order_notifications type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Advanced: Mozg Itau Notifications</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>40</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <ignore_refund_notification>
+                                    <label>Ignore refund notification</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-ignorar-notificação-de-reembolso" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>230</sort_order>
+                                    <config_path>payment/mozg_itau_abstract/ignore_refund_notification</config_path>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </ignore_refund_notification>
+                            </fields>
+                        </mozg_itau_order_notifications>
+                        <!--<mozg_itau_billing_agreements type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Advanced: Billing Agreements</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <sort_order>50</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <comment><![CDATA[<p><strong>ONECLICK</strong>: The shopper opts in to storing their card details for future use. The shopper is present for the subsequent transaction, for cards the security code (CVC/CVV) is required.</p><p><strong>RECURRING*</strong>: Payment details are stored for future use. For cards, the security code (CVC/CVV) is not required for subsequent payments.</p><p><strong>ONECLICK, RECURRING*</strong>: Payment details are stored for future use. This allows the use of the stored payment details regardless of whether the shopper is on your site or not.</p>]]></comment>
+                            <fields>
+                                <recurringtypes translate="label">
+                                    <label>Agreement Type</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mozg_itau/source_recurringType</source_model>
+                                    <config_path>payment/mozg_itau_abstract/recurringtypes</config_path>
+                                    <sort_order>79</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <tooltip>When enabled, users can save their Credit Cards and their SEPA authorizations. ONECLICK will require the input of the CVC for subsequent payments, while RECURRING does not.</tooltip>
+                                </recurringtypes>
+                            </fields>
+                        </mozg_itau_billing_agreements>-->
+                        <mozg_itau_checkout_experience type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Advanced: Checkout Experience</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>60</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <payment_cancelled_redirect>
+                                    <label>Redirect destination after cancellation</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-redirecionar-o-destino-após-o-cancelamento" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mozg_itau/source_cancelRedirect</source_model>
+                                    <config_path>payment/mozg_itau_abstract/payment_cancelled_redirect</config_path>
+                                    <sort_order>30</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </payment_cancelled_redirect>
+                                <title_renderer>
+                                    <label>Payment method render method</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-método-de-pagamento-método-de-renderização" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mozg_itau/source_rendermode</source_model>
+                                    <config_path>payment/mozg_itau_abstract/title_renderer</config_path>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </title_renderer>
+                                <shopperlocale translate="label">
+                                    <label>Language locale (optional)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-idioma-local-opcional" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/shopperlocale</config_path>
+                                    <sort_order>180</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </shopperlocale>
+                                <countryCode translate="label">
+                                    <label>ISO Country Code (optional)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-código-do-país-iso-opcional" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_abstract/countryCode</config_path>
+                                    <sort_order>190</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </countryCode>
+                            </fields>
+                        </mozg_itau_checkout_experience>
+                        <mozg_itau_manual_review type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Advanced: Manual Review</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>70</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <comment><![CDATA[<p>Mozg's Risk analysis tool allows merchants to configure when a transaction should be rejected or accepted depending on certain characteristics of the payment. This process has always had two automatic outcomes, either accept or reject the payment. Now, Mozg's risk system can tell merchants when a transaction seems to be risky but without rejecting it, and requires to be manually reviewed in order to decide if it should be accepted or rejected.</p>]]></comment>
+                            <fields>
+                                <fraud_manual_review_status>
+                                    <label>Manual Review Status</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-status-da-revisão-manual" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mozg_itau/source_status_pending</source_model>
+                                    <config_path>payment/mozg_itau_abstract/fraud_manual_review_status</config_path>
+                                    <sort_order>30</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </fraud_manual_review_status>
+                                <fraud_manual_review_accept_status>
+                                    <label>Manual Review Accepted Status</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-revisão-manual-status-aceito" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_order_status_processing</source_model>
+                                    <config_path>payment/mozg_itau_abstract/fraud_manual_review_accept_status</config_path>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </fraud_manual_review_accept_status>
+                            </fields>
+                        </mozg_itau_manual_review>
+                        <!--<mozg_itau_split_payments type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Advanced: Split Payments</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>80</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <comment><![CDATA[<p>It is possible to do split payments with GiftCards please configure here what refund strategie you want to use</p>]]></comment>
+                            <fields>
+                                <split_payments_refund_strategy>
+                                    <label>Refund Strategy</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-braspag-php56/blob/master/README.md#-estratégia-de-reembolso" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mozg_itau/source_SplitPaymentsRefundStrategies</source_model>
+                                    <config_path>payment/amozg_itau_abstract/split_payments_refund_strategy</config_path>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </split_payments_refund_strategy>
+                            </fields>
+                        </mozg_itau_split_payments>-->
+                    </fields>
+                </mozg_itau_abstract>
+                <mozg_itau_shopline_bankline translate="label" module="mozg_itau">
+                    <label>Itaú Shopline Bankline</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>3050</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <frontend_model>mozg_base/adminhtml_system_config_fieldset_method</frontend_model>
+                    <activity_path>payment/mozg_itau_shopline_bankline/active</activity_path>
+                    <fields>
+                        <mozg_itau_shopline_bankline_group_1 type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Configurações básica nativa</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>100</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <active translate="label">
+                                    <label>Enabled</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-ativar" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <config_path>payment/mozg_itau_shopline_bankline/active</config_path>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </active>
+                                <sort_order translate="label">
+                                    <label>Sort Order</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-ordem-de-exibição" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_bankline/sort_order</config_path>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </sort_order>
+                                <title translate="label">
+                                    <label>Title</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-título" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_bankline/title</config_path>
+                                    <sort_order>30</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </title>
+                                <allowspecific translate="label">
+                                    <label>Payment from applicable countries</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-pagamentos-aplicáveis-aos-países" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>allowspecific</frontend_type>
+                                    <sort_order>40</sort_order>
+                                    <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                                    <config_path>payment/mozg_itau_shopline_bankline/allowspecific</config_path>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </allowspecific>
+                                <specificcountry translate="label">
+                                    <label>Payment from specific countries</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-pagamentos-específicos-aos-países" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <sort_order>50</sort_order>
+                                    <source_model>adminhtml/system_config_source_country</source_model>
+                                    <config_path>payment/mozg_itau_shopline_bankline/specificcountry</config_path>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <depends><allowspecific>1</allowspecific></depends>
+                                </specificcountry>
+                            </fields>
+                        </mozg_itau_shopline_bankline_group_1>
+                        <mozg_itau_shopline_bankline_group_2 type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Configurações para integração</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>200</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <vencimento translate="label">
+                                    <label>Vencimento (em dias)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-vencimento-em-dias" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_bankline/vencimento</config_path>
+                                    <sort_order>160</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </vencimento>
+                                <obs_ad_1 translate="label">
+                                    <label>Observação Adicional (1)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-observação-adicional-1" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_bankline/obs_ad_1</config_path>
+                                    <sort_order>170</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </obs_ad_1>
+                                <obs_ad_2 translate="label">
+                                    <label>Observação Adicional (2)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-observação-adicional-2" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_bankline/obs_ad_2</config_path>
+                                    <sort_order>180</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </obs_ad_2>
+                                <obs_ad_3 translate="label">
+                                    <label>Observação Adicional (3)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-observação-adicional-3" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_bankline/obs_ad_3</config_path>
+                                    <sort_order>190</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </obs_ad_3>
+                                <obs translate="label">
+                                    <label>Observação</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-observação-adicional-3" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_bankline/obs</config_path>
+                                    <sort_order>200</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </obs>
+                            </fields>
+                        </mozg_itau_shopline_bankline_group_2>
+                        <mozg_itau_shopline_bankline_group_3 type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Advanced Settings</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>300</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <order_underpaid_status translate="label">
+                                    <label>Order status underpaid</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-status-do-pedido-não-pago" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_order_status_processing</source_model>
+                                    <config_path>payment/mozg_itau_shopline_bankline/order_underpaid_status</config_path>
+                                    <sort_order>230</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </order_underpaid_status>
+                                <order_overpaid_status translate="label">
+                                    <label>Order status overpaid</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-status-do-pedido-pago-em-excesso" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_order_status_processing</source_model>
+                                    <config_path>payment/mozg_itau_shopline_bankline/order_overpaid_status</config_path>
+                                    <sort_order>240</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </order_overpaid_status>
+                                <visible_type>
+                                    <label>Visible in</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-visível-em" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mozg_itau/source_VisibleType</source_model>
+                                    <config_path>payment/mozg_itau_shopline_bankline/visible_type</config_path>
+                                    <sort_order>250</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </visible_type>
+                            </fields>
+                        </mozg_itau_shopline_bankline_group_3>
+                    </fields>
+                </mozg_itau_shopline_bankline>
+                <mozg_itau_shopline_boleto translate="label" module="mozg_itau">
+                    <label>Itaú Shopline Boleto</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>3060</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <frontend_model>mozg_base/adminhtml_system_config_fieldset_method</frontend_model>
+                    <activity_path>payment/mozg_itau_shopline_boleto/active</activity_path>
+                    <fields>
+                        <mozg_itau_shopline_boleto_group_1 type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Configurações básica nativa</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>100</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <active translate="label">
+                                    <label>Enabled</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-ativar" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <config_path>payment/mozg_itau_shopline_boleto/active</config_path>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </active>
+                                <sort_order translate="label">
+                                    <label>Sort Order</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-ordem-de-exibição" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_boleto/sort_order</config_path>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </sort_order>
+                                <title translate="label">
+                                    <label>Title</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-título" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_boleto/title</config_path>
+                                    <sort_order>30</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </title>
+                                <allowspecific translate="label">
+                                    <label>Payment from applicable countries</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-pagamentos-aplicáveis-aos-países" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>allowspecific</frontend_type>
+                                    <sort_order>40</sort_order>
+                                    <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+                                    <config_path>payment/mozg_itau_shopline_boleto/allowspecific</config_path>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </allowspecific>
+                                <specificcountry translate="label">
+                                    <label>Payment from specific countries</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-pagamentos-específicos-aos-países" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <sort_order>50</sort_order>
+                                    <source_model>adminhtml/system_config_source_country</source_model>
+                                    <config_path>payment/mozg_itau_shopline_boleto/specificcountry</config_path>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <depends><allowspecific>1</allowspecific></depends>
+                                </specificcountry>
+                            </fields>
+                        </mozg_itau_shopline_boleto_group_1>
+                        <mozg_itau_shopline_boleto_group_2 type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Configurações para integração</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>200</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <vencimento translate="label">
+                                    <label>Vencimento (em dias)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-vencimento-em-dias" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_boleto/vencimento</config_path>
+                                    <sort_order>160</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </vencimento>
+                                <obs_ad_1 translate="label">
+                                    <label>Observação Adicional (1)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-observação-adicional-1" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_boleto/obs_ad_1</config_path>
+                                    <sort_order>170</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </obs_ad_1>
+                                <obs_ad_2 translate="label">
+                                    <label>Observação Adicional (2)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-observação-adicional-2" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_boleto/obs_ad_2</config_path>
+                                    <sort_order>180</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </obs_ad_2>
+                                <obs_ad_3 translate="label">
+                                    <label>Observação Adicional (3)</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-observação-adicional-3" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_boleto/obs_ad_3</config_path>
+                                    <sort_order>190</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </obs_ad_3>
+                                <obs translate="label">
+                                    <label>Observação</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-observação-adicional-3" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>text</frontend_type>
+                                    <config_path>payment/mozg_itau_shopline_boleto/obs</config_path>
+                                    <sort_order>200</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </obs>
+                            </fields>
+                        </mozg_itau_shopline_boleto_group_2>
+                        <mozg_itau_shopline_boleto_group_3 type="group" translate="label comment tooltip" module="mozg_itau">
+                            <label>Advanced Settings</label>
+                            <frontend_type>text</frontend_type>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>300</sort_order>
+                            <frontend_model>mozg_base/adminhtml_system_config_fieldset_expanded</frontend_model>
+                            <fields>
+                                <order_underpaid_status translate="label">
+                                    <label>Order status underpaid</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-status-do-pedido-não-pago" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_order_status_processing</source_model>
+                                    <config_path>payment/mozg_itau_shopline_boleto/order_underpaid_status</config_path>
+                                    <sort_order>230</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </order_underpaid_status>
+                                <order_overpaid_status translate="label">
+                                    <label>Order status overpaid</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-status-do-pedido-pago-em-excesso" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_order_status_processing</source_model>
+                                    <config_path>payment/mozg_itau_shopline_boleto/order_overpaid_status</config_path>
+                                    <sort_order>240</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </order_overpaid_status>
+                                <visible_type>
+                                    <label>Visible in</label>
+                                    <comment><![CDATA[<a href="https://github.com/mozgbrasil/magento-itau-php56/blob/master/README.md#-visível-em" target="_blank">__?__</a>]]></comment>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>mozg_itau/source_VisibleType</source_model>
+                                    <config_path>payment/mozg_itau_shopline_boleto/visible_type</config_path>
+                                    <sort_order>250</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </visible_type>
+                            </fields>
+                        </mozg_itau_shopline_boleto_group_3>
+                    </fields>
+                </mozg_itau_shopline_boleto>
+            </groups>
+        </payment>
+    </sections>
+</config>

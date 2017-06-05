@@ -1,0 +1,149 @@
+<?php
+/**
+ * Copyright © 2016 Mozg. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+<?php
+
+$mozg_util = new \Mozg\Framework\Util();
+
+?>
+<?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?><br/>
+<?php if ($_info = $this->getInfo()): ?>
+    <?php if ($_info->getMozgPspReference() == ''): ?>        
+        <?php echo Mage::helper('mozg_itau')->__('Payment has not been processed yet.') ?> <br/> 
+    <?php else :?>
+
+        <?php
+        $pspReference = $this->htmlEscape($_info->getMozgPspReference());
+
+        $codEmp = $this->getMethod()->_getConfigData('codigo_empresa', 'mozg_itau_abstract');
+        $codEmp = Mage::helper('core')->decrypt($codEmp);
+        $chave = $this->getMethod()->_getConfigData('chave_criptografia', 'mozg_itau_abstract');
+        $chave = Mage::helper('core')->decrypt($chave);
+        $incrementId = $this->getMethod()->getInfoInstance()->getOrder()->getIncrementId();
+        $pedido = substr($incrementId,-8);
+
+        try {
+
+            //
+
+            $metodoResultado = 0;
+
+            $itauCripto = new \ItauBankline\ItauCripto();
+            $query_dc = $itauCripto->geraConsulta($codEmp , $pedido , $metodoResultado , $chave);
+
+            $itauService = new \ItauBankline\ItauBanklineService();
+            $url_consulta = $itauService::URL_CONSULTA_TRANSACOES;
+            $url = $url_consulta . $query_dc;        
+
+            echo Mage::helper('mozg_itau')->__('Itáu PSP Reference: <a href="%s" target="_blank">Clique aqui</a>', $url) . '<br>';
+
+            //
+
+            $metodoResultado = 1;
+
+            $itauService = new \ItauBankline\ItauBanklineService();
+            $itauCripto = new \ItauBankline\ItauCripto();
+            $dadosCriptografados = $itauCripto->geraConsulta($codEmp , $pedido , $metodoResultado , $chave);
+
+            try {
+
+                $consulta = $itauService->consultaTransacao($dadosCriptografados);
+
+            } catch (Exception $e) {
+
+                $message = $e->getMessage();
+                $message = mb_check_encoding($message, 'UTF-8') ? $message : utf8_encode($message); // FIX: posi\E7\F5es
+
+                echo($message);
+            }
+
+            //dump($consulta);
+
+            $tipPag = $consulta->tipPag;
+            $sitPag = $consulta->sitPag;
+
+            $_tipo_pagamento = array(
+                '00'=>'Pagamento ainda não escolhido',
+                '01'=>'Pagamento à vista (TEF e CDC)',
+                '02'=>'Boleto bancário',
+                '03'=>'Cartão de crédito',
+            );
+
+            $tipo_pagamento = $_tipo_pagamento[$tipPag];
+
+            echo Mage::helper('mozg_itau')->__('Tipo de pagamento: %s', $tipo_pagamento) . ' <br/>';
+
+            $_status_pagamento = array(
+                '00'=>array( // pagamento ainda não escolhido
+                    '01'=>'Situação de pagamento não finalizada (tente novamente)',
+                    '02'=>'Erro no processamento da consulta (tente novamente)',
+                    '03'=>'Pagamento não localizado (consulta fora de prazo ou pedido não registrado no banco)',
+                ),
+                '01'=>array( //pagamento à vista (TEF e CDC)
+                    '00'=>'Pagamento efetuado',
+                    '01'=>'Situação de pagamento não finalizada (tente novamente)',
+                    '02'=>'Erro no processamento da consulta (tente novamente)',
+                    '03'=>'Pagamento não localizado (consulta fora de prazo ou pedido não registrado no banco)',
+                ),
+                '02'=>array( //boleto bancário
+                    '00'=>'Pagamento efetuado',
+                    '01'=>'Situação de pagamento não finalizada (tente novamente)',
+                    '02'=>'Erro no processamento da consulta (tente novamente)',
+                    '03'=>'Pagamento não localizado (consulta fora de prazo ou pedido não registrado no banco)',
+                    '04'=>'Boleto emitido com sucesso',
+                    '05'=>'Pagamento efetuado, aguardando compensação',
+                    '06'=>'Pagamento não compensado',
+                ),
+                '03'=>array( //cartão de crédito
+                    '00'=>'Pagamento efetuado',
+                    '01'=>'Situação de pagamento não finalizada (tente novamente)',
+                    '02'=>'Erro no processamento da consulta (tente novamente)',
+                    '03'=>'Pagamento não localizado (consulta fora de prazo ou pedido não registrado no banco)',
+                ),
+            );
+
+            $color = ($sitPag == '00') ? 'green' : 'red';
+
+            $status_pagamento = $_status_pagamento[$tipPag][$sitPag];
+            $status_pagamento = Mage::helper('mozg_itau')->__($status_pagamento);            
+            $status_pagamento = '<font color="'.$color.'"><b>' . $status_pagamento . '</b></font>';
+            echo Mage::helper('mozg_itau')->__('Status da Transação: %s', $status_pagamento) . ' <br/>';
+
+            //
+
+        } catch (\Exception $e) {
+          $message = $e->getMessage();
+          $message = mb_check_encoding($message, 'UTF-8') ? $message : utf8_encode($message);; // FIX: posi\E7\F5es
+          echo($message);
+        }
+
+        ?>
+
+        <?php 
+        $boleto = unserialize($this->getInfo()->getPoNumber());
+        //dump($url);
+        $url = $this->getInfo()->getOrder()->getMozgPaymentUrl();
+
+        echo Mage::helper('mozg_itau')->__('Payment URL: <a id="itaushopline_link" href="%s" target="_blank">Clique aqui</a>', $url);
+        ?>
+        <br/>
+
+    <?php endif;?>
+
+
+    <?php if($_info->getMozgBoletoPaidAmount() != null && $_info->getMozgBoletoPaidAmount() != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Paid amount: %s', $this->htmlEscape($_info->getMozgBoletoPaidAmount())) ?> <br/>
+    <?php endif; ?>
+    <?php if($this->htmlEscape($this->getInfo()->getMozgRefusalReasonRaw()) != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Raw acquirer response: %s', $this->htmlEscape($this->getInfo()->getMozgRefusalReasonRaw())) ?><br/>
+    <?php endif; ?>
+    <?php if($this->htmlEscape($this->getInfo()->getMozgAuthCode()) != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Authorisation code: %s', $this->htmlEscape($this->getInfo()->getMozgAuthCode())) ?><br/>
+    <?php endif; ?>
+    <?php if($this->htmlEscape($this->getInfo()->getMozgAcquirerReference()) != ""): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Acquirer reference: %s', $this->htmlEscape($this->getInfo()->getMozgAcquirerReference())) ?><br/>
+    <?php endif; ?>
+<?php endif;?>
