@@ -1,0 +1,128 @@
+<?php
+/**
+ * Copyright © 2016 Mozg. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
+/*dump($this->getData());
+dump(get_class_methods(get_class($this)));
+dump($this->getOrderId());*/
+
+?>
+
+<script type="text/javascript">
+console.log('<?php echo get_class($this) ?>');
+</script>
+
+<!-- <?php echo get_class($this) ?> -->
+
+<?php if ($this->isCurrentMethod()): ?>
+
+    <div class="itau-checkout-onepage-success">
+
+        <?php if ($this->isBanklinePayment()): ?>
+
+            <div id="itau-notification-messages" style="visibility:hidden;">
+                <ul class="messages">
+                    <li class="notice-msg">
+                        <ul>
+                            <li><span id="itau-notification-message"></span></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="payment-url">
+                <?php echo Mage::helper('mozg_itau')->__('<button id="itau_transaction" type="submit" class="button" onclick="window.open(\'%s\')"><span><span>Click here to process transaction</span></span></button>', $this->getPaymentUrl()) ?>
+            </div>
+
+            <script type="text/javascript">
+                function MozgTestPopup()
+                {
+
+                    console.log(arguments.callee.name);
+
+                    popUp = window.open ("", 'SHOPLINE');
+                    //popUp = window.open('','SHOPLINE','toolbar=yes,menubar=yes,resizable=yes,status=no,scrollbars=yes,width=815,height=575');
+
+                    console.log(popUp);
+
+                    if (popUp == null || typeof (popUp) == 'undefined')
+                    {
+
+                        console.log('blockedPopUp');
+
+                        document.getElementById('itau-notification-messages').style.visibility = "visible";
+
+                        document.getElementById("itau-notification-message").innerHTML = "O bloqueador de pop-ups está ativo em seu navegador. <br> Clique no botão para processar a transação.";
+
+                        retorno = false;
+                    }
+                    else
+                    {
+
+                        console.log('NonBlockedPopUp');
+
+                        //document.getElementById('itau-notification-messages').style.visibility = "visible";
+
+                        //$('itau-notification-message').innerHTML = 'OK';
+
+                        popUp.close();
+
+                        retorno = true;
+                    }
+
+                    console.log(retorno);
+
+                    var loop = setInterval(function() {
+                        console.log(popUp.closed);
+                        if(popUp.closed) {
+                            clearInterval(loop);
+                            console.log('closed');
+
+                            /*pre.show('Processando...');
+
+                            setTimeout(function() {
+                                setPaymentNotificationUrl_Itau();
+                            }, 1);*/
+                        }
+                    }, 1000);
+
+                    return retorno;
+
+                }
+
+                MozgTestPopup();
+
+            </script>
+
+        <?php endif; ?>
+
+        <?php if ($this->isBoletoPayment()): ?>
+            <div class="payment-url">
+                <?php echo Mage::helper('mozg_itau')->__('<button id="itau_transaction" type="submit" class="button" onclick="javascript:openPopupsMozg(\'%s\', \'WinXilinus\', \'Link\', \'Itau\', \'itau\');"><span><span>Click here to process transaction</span></span></button>', $this->getPaymentUrl()) ?>
+            </div>
+        <?php endif; ?>
+
+        <script type="text/javascript">
+
+        Event.observe (window, "load", function (event){
+            console.log('load');
+            console.log(event);
+            var target= 'target' in event ? event.target : event.srcElement;
+            console.log('clicked on '+target.tagName);
+
+            if($('itau_transaction')){
+                window.location.href = "#itau_transaction";
+                $('itau_transaction').click();
+            }
+            
+        });
+
+        </script>
+
+    </div>
+
+    <?php endif; ?>
+
+<!-- <?php echo get_class($this) ?> -->

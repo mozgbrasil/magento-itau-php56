@@ -1,0 +1,12 @@
+## Modman Module Mozg
+app/code/local/Mozg/Itau/	app/code/local/Mozg/Itau/
+app/design/adminhtml/default/default/layout/mozg_itau.xml	app/design/adminhtml/default/default/layout/mozg_itau.xml
+app/design/adminhtml/default/default/template/mozg_itau/	app/design/adminhtml/default/default/template/mozg_itau/
+app/design/frontend/base/default/layout/mozg_itau.xml	app/design/frontend/base/default/layout/mozg_itau.xml
+app/design/frontend/base/default/template/mozg_itau/	app/design/frontend/base/default/template/mozg_itau/
+app/etc/modules/Mozg_Itau.xml	app/etc/modules/Mozg_Itau.xml
+app/locale/pt_BR/Mozg_Itau.csv	app/locale/pt_BR/Mozg_Itau.csv
+js/mozg_itau/	js/mozg_itau/
+skin/adminhtml/default/default/images/mozg_itau/	skin/adminhtml/default/default/images/mozg_itau/
+skin/frontend/base/default/css/mozg_itau/	skin/frontend/base/default/css/mozg_itau/
+skin/frontend/base/default/images/mozg_itau/	skin/frontend/base/default/images/mozg_itau/

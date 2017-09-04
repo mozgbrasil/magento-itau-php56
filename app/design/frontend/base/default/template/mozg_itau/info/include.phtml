@@ -1,0 +1,193 @@
+<?php
+/**
+ * Copyright © 2016 Mozg. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+
+<?php
+
+/*
+dump(get_class($this));
+dump($this->getData());
+dump($this->getMethod());
+dump($this->getMethod()->getData());
+dump($this->getInfo());
+dump($this->getInfo()->getData());
+dump(get_class_methods(get_class($this)));
+//dump(get_class_methods(get_class($this->getInfo())));
+*/
+
+?>
+
+<?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?><br/>
+
+<?php if ($_info = $this->getInfo()): ?>
+
+    <?php if ($_info->getMozgPspReference() == ''): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Payment has not been processed yet.') ?> <br/>
+    <?php else :?>
+
+        <?php 
+
+        //
+
+        $order = $this->getMethod()->getInfoInstance()->getOrder();
+
+        $realOrderId = $order->getRealOrderId();
+        $incrementId = $order->getIncrementId();
+
+        $storeId = $this->getMethod()->getInfoInstance()->getOrder()->getStoreId();
+
+        //
+
+        $pspReference = $this->htmlEscape($_info->getMozgPspReference());
+
+        //
+
+        /*
+        if (Mage::app()->getStore()->isAdmin()){
+
+        $url = Mage::helper('adminhtml')->getUrl('adminhtml/Pagseguro/consulta/', array('pspReference' => $pspReference) );
+        $link = "javascript:openPopupsMozg('$url', 'WinXilinus', 'Link', 'PagSeguro', 'pagseguro');";
+
+        echo Mage::helper('mozg_itau')->__('PagSeguro PSP Reference: <a href="%s">%s</a>', $link, $pspReference) . ' <br/>';
+
+        }
+        */
+
+        //
+
+        $codEmp = $this->getMethod()->_getConfigData('codigo_empresa', 'mozg_itau_abstract');
+        $codEmp = Mage::helper('core')->decrypt($codEmp);
+        $chave = $this->getMethod()->_getConfigData('chave_criptografia', 'mozg_itau_abstract');
+        $chave = Mage::helper('core')->decrypt($chave);
+        $incrementId = $this->getMethod()->getInfoInstance()->getOrder()->getIncrementId();
+        $pedido = substr($incrementId,-8);
+
+        try {
+
+            //
+
+            $metodoResultado = 0;
+
+            $itauCripto = new \ItauBankline\ItauCripto();
+            $query_dc = $itauCripto->geraConsulta($codEmp , $pedido , $metodoResultado , $chave);
+
+            $itauService = new \ItauBankline\ItauBanklineService();
+            $url_consulta = $itauService::URL_CONSULTA_TRANSACOES;
+            $url = $url_consulta . $query_dc;        
+
+            echo Mage::helper('mozg_itau')->__('Itáu PSP Reference: <a href="%s" target="_blank">Clique aqui</a>', $url) . '<br>';
+
+            //
+
+            $metodoResultado = 1;
+
+            $itauService = new \ItauBankline\ItauBanklineService();
+            $itauCripto = new \ItauBankline\ItauCripto();
+            $dadosCriptografados = $itauCripto->geraConsulta($codEmp , $pedido , $metodoResultado , $chave);
+
+            try {
+
+                $consulta = $itauService->consultaTransacao($dadosCriptografados);
+
+            } catch (Exception $e) {
+                exit($e->getMessage());
+            }
+
+            //dump($consulta);
+
+            $tipPag = $consulta->tipPag;
+            $sitPag = $consulta->sitPag;
+
+            $tipo_pagamento = Mage::helper('mozg_itau')->tipo_pagamento;
+
+            $tipo_pagamento = $tipo_pagamento[$tipPag];
+
+            if (Mage::app()->getStore()->isAdmin()){
+
+                echo Mage::helper('mozg_itau')->__('Tipo de pagamento: %s', $tipo_pagamento) . ' <br/>';
+
+                $status_pagamento = Mage::helper('mozg_itau')->status_pagamento; 
+
+                //dump($status_pagamento);
+                //dump(get_class_methods(get_class(Mage::helper('mozg_itau'))));
+                //dump(get_class_vars(get_class(Mage::helper('mozg_itau'))));
+
+                $color = ($sitPag == '00') ? 'green' : 'red';
+
+                $status_pagamento = $status_pagamento[$tipPag][$sitPag];
+                $status_pagamento = Mage::helper('mozg_itau')->__($status_pagamento);            
+                $status_pagamento = '<font color="'.$color.'"><b>' . $status_pagamento . '</b></font>';
+                echo Mage::helper('mozg_itau')->__('Status da Transação: %s', $status_pagamento) . ' <br/>';
+
+            }
+
+            //
+
+        } catch (\Exception $e) {
+          $message = $e->getMessage();
+          $message = mb_check_encoding($message, 'UTF-8') ? $message : utf8_encode($message);; // FIX: posi\E7\F5es
+          echo($message);
+        }
+
+        //
+
+        ?>
+
+    <?php endif;?>
+
+
+    <?php if ($this->getInfo()->getMethod() == 'mozg_itau_shopline_bankline'): ?>
+        <?php $boleto = unserialize($this->getInfo()->getPoNumber())?>
+        <?php if(!empty($boleto['firstname'])): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Social Security Number: %s', $this->htmlEscape($boleto['social_security_number'])) ?><br/>
+        <?php echo Mage::helper('mozg_itau')->__('Firstname: %s', $this->htmlEscape($boleto['firstname'])) ?><br/>
+        <?php echo Mage::helper('mozg_itau')->__('Lastname: %s', $this->htmlEscape($boleto['lastname'])) ?><br/>
+        <?php endif;?>
+
+        <?php if($this->getInfo()->getOrder() != null): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Boleto PDF: <a target="_blank" href="%s">Download</a>', $this->getInfo()->getOrder()->getMozgPaymentUrl()) ?><br/>
+        <?php endif;?>
+    <?php endif; ?>
+
+
+
+    <?php if ($this->getInfo()->getMethod() == 'mozg_itau_shopline_boleto'): ?>
+        <?php $boleto = unserialize($this->getInfo()->getPoNumber())?>
+        <?php if(!empty($boleto['firstname'])): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Social Security Number: %s', $this->htmlEscape($boleto['social_security_number'])) ?><br/>
+        <?php echo Mage::helper('mozg_itau')->__('Firstname: %s', $this->htmlEscape($boleto['firstname'])) ?><br/>
+        <?php echo Mage::helper('mozg_itau')->__('Lastname: %s', $this->htmlEscape($boleto['lastname'])) ?><br/>
+        <?php endif;?>
+
+        <?php if($this->getInfo()->getOrder() != null): ?>
+        <?php echo Mage::helper('mozg_itau')->__('Boleto PDF: <a target="_blank" href="%s">Download</a>', $this->getInfo()->getOrder()->getMozgPaymentUrl()) ?><br/>
+        <?php endif;?>
+    <?php endif; ?>
+
+
+
+    <?php if (Mage::app()->getStore()->isAdmin()): ?>
+        <?php if($this->htmlEscape($this->getInfo()->getMozgAvsResult()) != ""): ?>
+            <?php echo Mage::helper('mozg_itau')->__('Avs result: %s', $this->htmlEscape($this->getInfo()->getMozgAvsResult())) ?><br/>
+        <?php endif; ?>
+        <?php if($this->htmlEscape($this->getInfo()->getMozgCvcResult()) != ""): ?>
+            <?php echo Mage::helper('mozg_itau')->__('Cvc result: %s', $this->htmlEscape($this->getInfo()->getMozgCvcResult())) ?><br/>
+        <?php endif; ?>
+        <?php if($this->htmlEscape($this->getInfo()->getMozgTotalFraudScore()) != ""): ?>
+            <?php echo Mage::helper('mozg_itau')->__('Total fraud score: %s', $this->htmlEscape($this->getInfo()->getMozgTotalFraudScore())) ?><br/>
+        <?php endif; ?>
+        <?php if($this->htmlEscape($this->getInfo()->getMozgRefusalReasonRaw()) != ""): ?>
+            <?php echo Mage::helper('mozg_itau')->__('Raw acquirer response: %s', $this->htmlEscape($this->getInfo()->getMozgRefusalReasonRaw())) ?><br/>
+        <?php endif; ?>
+        <?php if($this->htmlEscape($this->getInfo()->getMozgAuthCode()) != ""): ?>
+            <?php echo Mage::helper('mozg_itau')->__('Authorisation code: %s', $this->htmlEscape($this->getInfo()->getMozgAuthCode())) ?><br/>
+        <?php endif; ?>
+        <?php if($this->htmlEscape($this->getInfo()->getMozgAcquirerReference()) != ""): ?>
+            <?php echo Mage::helper('mozg_itau')->__('Acquirer reference: %s', $this->htmlEscape($this->getInfo()->getMozgAcquirerReference())) ?><br/>
+        <?php endif; ?>
+    <?php endif; ?>
+
+<?php endif;?>
